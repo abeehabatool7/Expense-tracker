@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ledger — Personal Expense Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="28" height="28" rx="8" fill="#1a6cff"/>
+          <path d="M10 16h12M16 10v12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="brand-name">Led<span>ger</span></span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-view="dashboard">
+        <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="11" y="2" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="2" y="11" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="11" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity=".4"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-btn" data-view="expenses">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 5h12M4 10h8M4 15h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        All Expenses
+      </button>
+      <button class="nav-btn" data-view="add">
+        <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.8"/><path d="M10 6v8M6 10h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Add Expense
+      </button>
+      <button class="nav-btn" data-view="analytics">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M3 15l4-5 4 3 4-6 3-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Analytics
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="total-widget">
+        <span class="total-label">Total Spent</span>
+        <span class="total-amount" id="sidebar-total">Rs 0.00</span>
+      </div>
+    </div>
+  </aside>
+
+  
+  <header class="mobile-header">
+    <div class="brand-mark small">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="28" height="28" rx="8" fill="#1a6cff"/>
+        <path d="M10 16h12M16 10v12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="brand-name">Ledger</span>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  
+  <main class="main">
+
+    
+    <section class="view active" id="view-dashboard">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-subtitle">Your financial overview at a glance</p>
+        </div>
+        <div class="header-date" id="header-date"></div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card accent-card">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z" fill="currentColor"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Spent</span>
+            <span class="stat-value" id="stat-total">Rs 0.00</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon muted">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" fill="currentColor"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">This Month</span>
+            <span class="stat-value" id="stat-month">Rs 0.00</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon muted">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z" fill="currentColor"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Transactions</span>
+            <span class="stat-value" id="stat-count">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon muted">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" fill="currentColor"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Avg / Transaction</span>
+            <span class="stat-value" id="stat-avg">Rs 0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="dash-card wide">
+          <div class="card-header">
+            <h2 class="card-title">Recent Expenses</h2>
+            <button class="link-btn" data-view="expenses">View all →</button>
+          </div>
+          <div id="recent-list" class="recent-list">
+            <div class="empty-state small">No expenses yet. Add one to get started.</div>
+          </div>
+        </div>
+        <div class="dash-card">
+          <div class="card-header">
+            <h2 class="card-title">By Category</h2>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="dash-pie"></canvas>
+            <div class="chart-empty" id="pie-empty">No data yet</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <section class="view" id="view-expenses">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">All Expenses</h1>
+          <p class="page-subtitle" id="expenses-count-label">0 entries</p>
+        </div>
+        <button class="btn btn-primary" data-view="add">+ Add New</button>
+      </div>
+
+      
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label class="filter-label">Category</label>
+          <select class="filter-select" id="filter-category">
+            <option value="">All Categories</option>
+            <option value="Food & Dining">Food & Dining</option>
+            <option value="Transport">Transport</option>
+            <option value="Utilities">Utilities</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Health">Health</option>
+            <option value="Education">Education</option>
+            <option value="Travel">Travel</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">From</label>
+          <input type="date" class="filter-input" id="filter-from" />
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">To</label>
+          <input type="date" class="filter-input" id="filter-to" />
+        </div>
+        <button class="btn btn-ghost" id="clear-filters">Clear</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="expense-table" id="expense-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Date</th>
+              <th>Notes</th>
+              <th class="text-right">Amount</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="expense-tbody">
+          </tbody>
+        </table>
+        <div class="table-empty" id="table-empty">
+          <div class="empty-icon">💸</div>
+          <p>No expenses found</p>
+          <span>Try adjusting your filters or add a new expense</span>
+        </div>
+      </div>
+    </section>
+
+    
+    <section class="view" id="view-add">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title" id="form-title">Add Expense</h1>
+          <p class="page-subtitle">Track where your money goes</p>
+        </div>
+      </div>
+
+      <div class="form-layout">
+        <form class="expense-form" id="expense-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="input-title">Title <span class="required">*</span></label>
+            <input class="form-input" type="text" id="input-title" placeholder="e.g. Dinner with friends" maxlength="80" />
+            <span class="form-error" id="err-title"></span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="input-amount">Amount <span class="required">*</span></label>
+              <div class="input-prefix-wrap">
+                <span class="input-prefix">Rs</span>
+                <input class="form-input prefixed" type="number" id="input-amount" placeholder="0.00" min="0.01" step="0.01" />
+              </div>
+              <span class="form-error" id="err-amount"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="input-date">Date <span class="required">*</span></label>
+              <input class="form-input" type="date" id="input-date" />
+              <span class="form-error" id="err-date"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="input-category">Category <span class="required">*</span></label>
+            <select class="form-input" id="input-category">
+              <option value="">Select a category</option>
+              <option value="Food & Dining">🍽️ Food & Dining</option>
+              <option value="Transport">🚗 Transport</option>
+              <option value="Utilities">⚡ Utilities</option>
+              <option value="Shopping">🛍️ Shopping</option>
+              <option value="Entertainment">🎬 Entertainment</option>
+              <option value="Health">💊 Health</option>
+              <option value="Education">📚 Education</option>
+              <option value="Travel">✈️ Travel</option>
+              <option value="Other">📦 Other</option>
+            </select>
+            <span class="form-error" id="err-category"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="input-notes">Notes <span class="optional">(optional)</span></label>
+            <textarea class="form-input textarea" id="input-notes" placeholder="Any additional details..." rows="3" maxlength="200"></textarea>
+            <span class="char-count" id="char-count">0/200</span>
+          </div>
+
+          <input type="hidden" id="edit-id" />
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-ghost" id="form-cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="form-submit">Save Expense</button>
+          </div>
+        </form>
+
+        <div class="form-aside">
+          <div class="tip-card">
+            <h3 class="tip-title">Quick Tips</h3>
+            <ul class="tip-list">
+              <li>Be specific with titles to track spending patterns</li>
+              <li>Add notes for receipts or reference numbers</li>
+              <li>Categorise consistently for better insights</li>
+            </ul>
+          </div>
+          <div class="category-preview" id="category-preview">
+            <div class="preview-label">Selected Category</div>
+            <div class="preview-badge" id="preview-badge">—</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <section class="view" id="view-analytics">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Analytics</h1>
+          <p class="page-subtitle">Understand your spending patterns</p>
+        </div>
+      </div>
+
+      <div class="analytics-grid">
+        <div class="analytics-card">
+          <div class="card-header">
+            <h2 class="card-title">Spending by Category</h2>
+          </div>
+          <div class="chart-wrap tall">
+            <canvas id="analytics-bar"></canvas>
+            <div class="chart-empty" id="bar-empty">Add expenses to see chart</div>
+          </div>
+        </div>
+
+        <div class="analytics-card">
+          <div class="card-header">
+            <h2 class="card-title">Distribution</h2>
+          </div>
+          <div class="chart-wrap tall">
+            <canvas id="analytics-doughnut"></canvas>
+            <div class="chart-empty" id="doughnut-empty">Add expenses to see chart</div>
+          </div>
+          <div class="legend-list" id="analytics-legend"></div>
+        </div>
+
+        <div class="analytics-card wide">
+          <div class="card-header">
+            <h2 class="card-title">Monthly Trend</h2>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="analytics-line"></canvas>
+            <div class="chart-empty" id="line-empty">Add expenses across months to see trend</div>
+          </div>
+        </div>
+
+        <div class="analytics-card">
+          <div class="card-header">
+            <h2 class="card-title">Category Breakdown</h2>
+          </div>
+          <div id="breakdown-list" class="breakdown-list"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  
+  <div class="toast" id="toast"></div>
+
+  
+  <div class="modal-backdrop" id="modal-backdrop">
+    <div class="modal">
+      <div class="modal-icon">🗑️</div>
+      <h3 class="modal-title">Delete Expense?</h3>
+      <p class="modal-body">This action cannot be undone. The expense will be permanently removed.</p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="modal-cancel">Cancel</button>
+        <button class="btn btn-danger" id="modal-confirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
